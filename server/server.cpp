@@ -5,14 +5,15 @@
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TThreadedServer.h>
 #include <thrift/transport/TServerSocket.h>
+#include <thrift/transport/TPipeServer.h>
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/server/TSimpleServer.h>
+
+#include "../transport.h"
 
 #include <iostream>
 #include <chrono>
 #include <thread>
-
-#include "../transport.cpp"
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -20,7 +21,6 @@ using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
 using namespace ::hello;
-using namespace boost::interprocess;
 
 class HelloHandler : virtual public HelloIf
 {
@@ -44,14 +44,13 @@ public:
 
 	virtual void mulOfSum( MulOfSumOut& _return, const MulOfSumIn& input ) override
 	{
-		return;
 		int mul = 1;
 		_return.sums.reserve( input.pairs.size() );
 
 		for ( const auto& p : input.pairs )
 		{
 			int s = p.a + p.b;
-			mul *= s;
+			//mul *= s;
 			_return.sums.push_back( s );
 		}
 	}
@@ -87,16 +86,21 @@ int main(int argc, char** argv)
 	constexpr int a = 0;
 	stdcxx::shared_ptr<TServerTransport> serverTransport;
 	stdcxx::shared_ptr<TTransportFactory> transportFactory;
-	if ( a )
+	if ( a == 1 )
 	{
 		serverTransport = stdcxx::make_shared<TServerSocket>( 4242 );
 		transportFactory = stdcxx::make_shared<TBufferedTransportFactory>();
 	}
-	else
+	else if ( a == 2 )
 	{
-		serverTransport = stdcxx::make_shared<MyServerTransport>();
-		transportFactory = stdcxx::make_shared<TFramedTransportFactory>();
+		serverTransport = stdcxx::make_shared<TPipeServer>( "my_pipe" );
+		transportFactory = stdcxx::make_shared<TBufferedTransportFactory>();
 	}
+	else 
+	{
+		serverTransport = stdcxx::make_shared<SharedMemory::SharedMemoryServerTransport>();
+		transportFactory = stdcxx::make_shared<TFramedTransportFactory>();
+	} 
 
 	auto handler   = stdcxx::make_shared<HelloHandler>();
 	auto processor = stdcxx::make_shared<HelloProcessor>(handler);
