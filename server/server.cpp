@@ -12,9 +12,6 @@
 #include <chrono>
 #include <thread>
 
-#include <boost/interprocess/shared_memory_object.hpp>
-#include <boost/interprocess/managed_shared_memory.hpp>
-
 #include "../transport.cpp"
 
 using namespace ::apache::thrift;
@@ -37,14 +34,26 @@ public:
 
 	int32_t add(const int32_t a, const int32_t b)
 	{
-		printf("add\n");
 		return a + b;
 	}
 
 	int32_t mul(const int32_t a, const int32_t b)
 	{
-		printf("mul\n");
 		return a * b;
+	}
+
+	virtual void mulOfSum( MulOfSumOut& _return, const MulOfSumIn& input ) override
+	{
+		return;
+		int mul = 1;
+		_return.sums.reserve( input.pairs.size() );
+
+		for ( const auto& p : input.pairs )
+		{
+			int s = p.a + p.b;
+			mul *= s;
+			_return.sums.push_back( s );
+		}
 	}
 };
 
@@ -62,38 +71,35 @@ public:
 
 int main(int argc, char** argv)
 {
-	struct shm_remove {
-		shm_remove()
-		{
-			shared_memory_object::remove("shared_memory");
-		}
-		~shm_remove()
-		{
-			shared_memory_object::remove("shared_memory");
-		}
-	} remover;
-
-	shared_memory_object shm(create_only, "shared_memory", read_write);
-	shm.truncate(1024);
-
+	/*windows_shared_memory shm(create_only, "shared_memory", read_write, 1024);
 	mapped_region region(shm, read_write);
 
 	char* mem = static_cast<char*>(region.get_address());
 	std::memset(mem, 0, region.get_size());
 	std::strcpy(mem, "hello, world");
 
-	// while (*mem != 0) {
-	// 	std::this_thread::sleep_for(std::chrono::seconds(1));
-	// }
+	 while (*mem != 0) {
+	 	std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	 }
 
-	// std::cout << "Read a 0 !\n";
+	 std::cout << "Read a 0 !\n";*/
 
-	int  port      = 4242;
+	constexpr int a = 0;
+	stdcxx::shared_ptr<TServerTransport> serverTransport;
+	stdcxx::shared_ptr<TTransportFactory> transportFactory;
+	if ( a )
+	{
+		serverTransport = stdcxx::make_shared<TServerSocket>( 4242 );
+		transportFactory = stdcxx::make_shared<TBufferedTransportFactory>();
+	}
+	else
+	{
+		serverTransport = stdcxx::make_shared<MyServerTransport>();
+		transportFactory = stdcxx::make_shared<TFramedTransportFactory>();
+	}
+
 	auto handler   = stdcxx::make_shared<HelloHandler>();
 	auto processor = stdcxx::make_shared<HelloProcessor>(handler);
-	// auto serverTransport  = stdcxx::make_shared<TServerSocket>(port);
-	auto serverTransport  = stdcxx::make_shared<MyServerTransport>();
-	auto transportFactory = stdcxx::make_shared<TBufferedTransportFactory>();
 	auto protocolFactory  = stdcxx::make_shared<TBinaryProtocolFactory>();
 
 	TSimpleServer server(processor, serverTransport, transportFactory, protocolFactory);
