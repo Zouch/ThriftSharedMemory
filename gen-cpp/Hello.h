@@ -24,6 +24,7 @@ class HelloIf {
   virtual void echo(const std::string& msg) = 0;
   virtual int32_t add(const int32_t a, const int32_t b) = 0;
   virtual int32_t mul(const int32_t a, const int32_t b) = 0;
+  virtual void mulOfSum(MulOfSumOut& _return, const MulOfSumIn& input) = 0;
 };
 
 class HelloIfFactory {
@@ -63,6 +64,9 @@ class HelloNull : virtual public HelloIf {
   int32_t mul(const int32_t /* a */, const int32_t /* b */) {
     int32_t _return = 0;
     return _return;
+  }
+  void mulOfSum(MulOfSumOut& /* _return */, const MulOfSumIn& /* input */) {
+    return;
   }
 };
 
@@ -374,6 +378,110 @@ class Hello_mul_presult {
 
 };
 
+typedef struct _Hello_mulOfSum_args__isset {
+  _Hello_mulOfSum_args__isset() : input(false) {}
+  bool input :1;
+} _Hello_mulOfSum_args__isset;
+
+class Hello_mulOfSum_args {
+ public:
+
+  Hello_mulOfSum_args(const Hello_mulOfSum_args&);
+  Hello_mulOfSum_args& operator=(const Hello_mulOfSum_args&);
+  Hello_mulOfSum_args() {
+  }
+
+  virtual ~Hello_mulOfSum_args() throw();
+  MulOfSumIn input;
+
+  _Hello_mulOfSum_args__isset __isset;
+
+  void __set_input(const MulOfSumIn& val);
+
+  bool operator == (const Hello_mulOfSum_args & rhs) const
+  {
+    if (!(input == rhs.input))
+      return false;
+    return true;
+  }
+  bool operator != (const Hello_mulOfSum_args &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const Hello_mulOfSum_args & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+
+class Hello_mulOfSum_pargs {
+ public:
+
+
+  virtual ~Hello_mulOfSum_pargs() throw();
+  const MulOfSumIn* input;
+
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _Hello_mulOfSum_result__isset {
+  _Hello_mulOfSum_result__isset() : success(false) {}
+  bool success :1;
+} _Hello_mulOfSum_result__isset;
+
+class Hello_mulOfSum_result {
+ public:
+
+  Hello_mulOfSum_result(const Hello_mulOfSum_result&);
+  Hello_mulOfSum_result& operator=(const Hello_mulOfSum_result&);
+  Hello_mulOfSum_result() {
+  }
+
+  virtual ~Hello_mulOfSum_result() throw();
+  MulOfSumOut success;
+
+  _Hello_mulOfSum_result__isset __isset;
+
+  void __set_success(const MulOfSumOut& val);
+
+  bool operator == (const Hello_mulOfSum_result & rhs) const
+  {
+    if (!(success == rhs.success))
+      return false;
+    return true;
+  }
+  bool operator != (const Hello_mulOfSum_result &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const Hello_mulOfSum_result & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+};
+
+typedef struct _Hello_mulOfSum_presult__isset {
+  _Hello_mulOfSum_presult__isset() : success(false) {}
+  bool success :1;
+} _Hello_mulOfSum_presult__isset;
+
+class Hello_mulOfSum_presult {
+ public:
+
+
+  virtual ~Hello_mulOfSum_presult() throw();
+  MulOfSumOut* success;
+
+  _Hello_mulOfSum_presult__isset __isset;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+
+};
+
 class HelloClient : virtual public HelloIf {
  public:
   HelloClient(apache::thrift::stdcxx::shared_ptr< ::apache::thrift::protocol::TProtocol> prot) {
@@ -408,6 +516,9 @@ class HelloClient : virtual public HelloIf {
   int32_t mul(const int32_t a, const int32_t b);
   void send_mul(const int32_t a, const int32_t b);
   int32_t recv_mul();
+  void mulOfSum(MulOfSumOut& _return, const MulOfSumIn& input);
+  void send_mulOfSum(const MulOfSumIn& input);
+  void recv_mulOfSum(MulOfSumOut& _return);
  protected:
   apache::thrift::stdcxx::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   apache::thrift::stdcxx::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;
@@ -426,12 +537,14 @@ class HelloProcessor : public ::apache::thrift::TDispatchProcessor {
   void process_echo(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_add(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
   void process_mul(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
+  void process_mulOfSum(int32_t seqid, ::apache::thrift::protocol::TProtocol* iprot, ::apache::thrift::protocol::TProtocol* oprot, void* callContext);
  public:
   HelloProcessor(::apache::thrift::stdcxx::shared_ptr<HelloIf> iface) :
     iface_(iface) {
     processMap_["echo"] = &HelloProcessor::process_echo;
     processMap_["add"] = &HelloProcessor::process_add;
     processMap_["mul"] = &HelloProcessor::process_mul;
+    processMap_["mulOfSum"] = &HelloProcessor::process_mulOfSum;
   }
 
   virtual ~HelloProcessor() {}
@@ -487,6 +600,16 @@ class HelloMultiface : virtual public HelloIf {
     return ifaces_[i]->mul(a, b);
   }
 
+  void mulOfSum(MulOfSumOut& _return, const MulOfSumIn& input) {
+    size_t sz = ifaces_.size();
+    size_t i = 0;
+    for (; i < (sz - 1); ++i) {
+      ifaces_[i]->mulOfSum(_return, input);
+    }
+    ifaces_[i]->mulOfSum(_return, input);
+    return;
+  }
+
 };
 
 // The 'concurrent' client is a thread safe client that correctly handles
@@ -526,6 +649,9 @@ class HelloConcurrentClient : virtual public HelloIf {
   int32_t mul(const int32_t a, const int32_t b);
   int32_t send_mul(const int32_t a, const int32_t b);
   int32_t recv_mul(const int32_t seqid);
+  void mulOfSum(MulOfSumOut& _return, const MulOfSumIn& input);
+  int32_t send_mulOfSum(const MulOfSumIn& input);
+  void recv_mulOfSum(MulOfSumOut& _return, const int32_t seqid);
  protected:
   apache::thrift::stdcxx::shared_ptr< ::apache::thrift::protocol::TProtocol> piprot_;
   apache::thrift::stdcxx::shared_ptr< ::apache::thrift::protocol::TProtocol> poprot_;

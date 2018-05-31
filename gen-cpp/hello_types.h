@@ -20,6 +20,150 @@
 
 namespace hello {
 
+class Pair;
+
+class MulOfSumIn;
+
+class MulOfSumOut;
+
+typedef struct _Pair__isset {
+  _Pair__isset() : a(false), b(false) {}
+  bool a :1;
+  bool b :1;
+} _Pair__isset;
+
+class Pair : public virtual ::apache::thrift::TBase {
+ public:
+
+  Pair(const Pair&);
+  Pair& operator=(const Pair&);
+  Pair() : a(0), b(0) {
+  }
+
+  virtual ~Pair() throw();
+  int32_t a;
+  int32_t b;
+
+  _Pair__isset __isset;
+
+  void __set_a(const int32_t val);
+
+  void __set_b(const int32_t val);
+
+  bool operator == (const Pair & rhs) const
+  {
+    if (!(a == rhs.a))
+      return false;
+    if (!(b == rhs.b))
+      return false;
+    return true;
+  }
+  bool operator != (const Pair &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const Pair & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(Pair &a, Pair &b);
+
+std::ostream& operator<<(std::ostream& out, const Pair& obj);
+
+typedef struct _MulOfSumIn__isset {
+  _MulOfSumIn__isset() : pairs(false) {}
+  bool pairs :1;
+} _MulOfSumIn__isset;
+
+class MulOfSumIn : public virtual ::apache::thrift::TBase {
+ public:
+
+  MulOfSumIn(const MulOfSumIn&);
+  MulOfSumIn& operator=(const MulOfSumIn&);
+  MulOfSumIn() {
+  }
+
+  virtual ~MulOfSumIn() throw();
+  std::vector<Pair>  pairs;
+
+  _MulOfSumIn__isset __isset;
+
+  void __set_pairs(const std::vector<Pair> & val);
+
+  bool operator == (const MulOfSumIn & rhs) const
+  {
+    if (!(pairs == rhs.pairs))
+      return false;
+    return true;
+  }
+  bool operator != (const MulOfSumIn &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MulOfSumIn & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(MulOfSumIn &a, MulOfSumIn &b);
+
+std::ostream& operator<<(std::ostream& out, const MulOfSumIn& obj);
+
+typedef struct _MulOfSumOut__isset {
+  _MulOfSumOut__isset() : sums(false), mul(false) {}
+  bool sums :1;
+  bool mul :1;
+} _MulOfSumOut__isset;
+
+class MulOfSumOut : public virtual ::apache::thrift::TBase {
+ public:
+
+  MulOfSumOut(const MulOfSumOut&);
+  MulOfSumOut& operator=(const MulOfSumOut&);
+  MulOfSumOut() : mul(0) {
+  }
+
+  virtual ~MulOfSumOut() throw();
+  std::vector<int32_t>  sums;
+  int64_t mul;
+
+  _MulOfSumOut__isset __isset;
+
+  void __set_sums(const std::vector<int32_t> & val);
+
+  void __set_mul(const int64_t val);
+
+  bool operator == (const MulOfSumOut & rhs) const
+  {
+    if (!(sums == rhs.sums))
+      return false;
+    if (!(mul == rhs.mul))
+      return false;
+    return true;
+  }
+  bool operator != (const MulOfSumOut &rhs) const {
+    return !(*this == rhs);
+  }
+
+  bool operator < (const MulOfSumOut & ) const;
+
+  uint32_t read(::apache::thrift::protocol::TProtocol* iprot);
+  uint32_t write(::apache::thrift::protocol::TProtocol* oprot) const;
+
+  virtual void printTo(std::ostream& out) const;
+};
+
+void swap(MulOfSumOut &a, MulOfSumOut &b);
+
+std::ostream& operator<<(std::ostream& out, const MulOfSumOut& obj);
+
 } // namespace
 
 #endif

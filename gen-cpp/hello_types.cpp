@@ -13,4 +13,360 @@
 
 namespace hello {
 
+
+Pair::~Pair() throw() {
+}
+
+
+void Pair::__set_a(const int32_t val) {
+  this->a = val;
+}
+
+void Pair::__set_b(const int32_t val) {
+  this->b = val;
+}
+std::ostream& operator<<(std::ostream& out, const Pair& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+uint32_t Pair::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->a);
+          this->__isset.a = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_I32) {
+          xfer += iprot->readI32(this->b);
+          this->__isset.b = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t Pair::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("Pair");
+
+  xfer += oprot->writeFieldBegin("a", ::apache::thrift::protocol::T_I32, 1);
+  xfer += oprot->writeI32(this->a);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("b", ::apache::thrift::protocol::T_I32, 2);
+  xfer += oprot->writeI32(this->b);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(Pair &a, Pair &b) {
+  using ::std::swap;
+  swap(a.a, b.a);
+  swap(a.b, b.b);
+  swap(a.__isset, b.__isset);
+}
+
+Pair::Pair(const Pair& other0) {
+  a = other0.a;
+  b = other0.b;
+  __isset = other0.__isset;
+}
+Pair& Pair::operator=(const Pair& other1) {
+  a = other1.a;
+  b = other1.b;
+  __isset = other1.__isset;
+  return *this;
+}
+void Pair::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "Pair(";
+  out << "a=" << to_string(a);
+  out << ", " << "b=" << to_string(b);
+  out << ")";
+}
+
+
+MulOfSumIn::~MulOfSumIn() throw() {
+}
+
+
+void MulOfSumIn::__set_pairs(const std::vector<Pair> & val) {
+  this->pairs = val;
+}
+std::ostream& operator<<(std::ostream& out, const MulOfSumIn& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+uint32_t MulOfSumIn::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->pairs.clear();
+            uint32_t _size2;
+            ::apache::thrift::protocol::TType _etype5;
+            xfer += iprot->readListBegin(_etype5, _size2);
+            this->pairs.resize(_size2);
+            uint32_t _i6;
+            for (_i6 = 0; _i6 < _size2; ++_i6)
+            {
+              xfer += this->pairs[_i6].read(iprot);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.pairs = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t MulOfSumIn::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MulOfSumIn");
+
+  xfer += oprot->writeFieldBegin("pairs", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_STRUCT, static_cast<uint32_t>(this->pairs.size()));
+    std::vector<Pair> ::const_iterator _iter7;
+    for (_iter7 = this->pairs.begin(); _iter7 != this->pairs.end(); ++_iter7)
+    {
+      xfer += (*_iter7).write(oprot);
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(MulOfSumIn &a, MulOfSumIn &b) {
+  using ::std::swap;
+  swap(a.pairs, b.pairs);
+  swap(a.__isset, b.__isset);
+}
+
+MulOfSumIn::MulOfSumIn(const MulOfSumIn& other8) {
+  pairs = other8.pairs;
+  __isset = other8.__isset;
+}
+MulOfSumIn& MulOfSumIn::operator=(const MulOfSumIn& other9) {
+  pairs = other9.pairs;
+  __isset = other9.__isset;
+  return *this;
+}
+void MulOfSumIn::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "MulOfSumIn(";
+  out << "pairs=" << to_string(pairs);
+  out << ")";
+}
+
+
+MulOfSumOut::~MulOfSumOut() throw() {
+}
+
+
+void MulOfSumOut::__set_sums(const std::vector<int32_t> & val) {
+  this->sums = val;
+}
+
+void MulOfSumOut::__set_mul(const int64_t val) {
+  this->mul = val;
+}
+std::ostream& operator<<(std::ostream& out, const MulOfSumOut& obj)
+{
+  obj.printTo(out);
+  return out;
+}
+
+
+uint32_t MulOfSumOut::read(::apache::thrift::protocol::TProtocol* iprot) {
+
+  ::apache::thrift::protocol::TInputRecursionTracker tracker(*iprot);
+  uint32_t xfer = 0;
+  std::string fname;
+  ::apache::thrift::protocol::TType ftype;
+  int16_t fid;
+
+  xfer += iprot->readStructBegin(fname);
+
+  using ::apache::thrift::protocol::TProtocolException;
+
+
+  while (true)
+  {
+    xfer += iprot->readFieldBegin(fname, ftype, fid);
+    if (ftype == ::apache::thrift::protocol::T_STOP) {
+      break;
+    }
+    switch (fid)
+    {
+      case 1:
+        if (ftype == ::apache::thrift::protocol::T_LIST) {
+          {
+            this->sums.clear();
+            uint32_t _size10;
+            ::apache::thrift::protocol::TType _etype13;
+            xfer += iprot->readListBegin(_etype13, _size10);
+            this->sums.resize(_size10);
+            uint32_t _i14;
+            for (_i14 = 0; _i14 < _size10; ++_i14)
+            {
+              xfer += iprot->readI32(this->sums[_i14]);
+            }
+            xfer += iprot->readListEnd();
+          }
+          this->__isset.sums = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      case 2:
+        if (ftype == ::apache::thrift::protocol::T_I64) {
+          xfer += iprot->readI64(this->mul);
+          this->__isset.mul = true;
+        } else {
+          xfer += iprot->skip(ftype);
+        }
+        break;
+      default:
+        xfer += iprot->skip(ftype);
+        break;
+    }
+    xfer += iprot->readFieldEnd();
+  }
+
+  xfer += iprot->readStructEnd();
+
+  return xfer;
+}
+
+uint32_t MulOfSumOut::write(::apache::thrift::protocol::TProtocol* oprot) const {
+  uint32_t xfer = 0;
+  ::apache::thrift::protocol::TOutputRecursionTracker tracker(*oprot);
+  xfer += oprot->writeStructBegin("MulOfSumOut");
+
+  xfer += oprot->writeFieldBegin("sums", ::apache::thrift::protocol::T_LIST, 1);
+  {
+    xfer += oprot->writeListBegin(::apache::thrift::protocol::T_I32, static_cast<uint32_t>(this->sums.size()));
+    std::vector<int32_t> ::const_iterator _iter15;
+    for (_iter15 = this->sums.begin(); _iter15 != this->sums.end(); ++_iter15)
+    {
+      xfer += oprot->writeI32((*_iter15));
+    }
+    xfer += oprot->writeListEnd();
+  }
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldBegin("mul", ::apache::thrift::protocol::T_I64, 2);
+  xfer += oprot->writeI64(this->mul);
+  xfer += oprot->writeFieldEnd();
+
+  xfer += oprot->writeFieldStop();
+  xfer += oprot->writeStructEnd();
+  return xfer;
+}
+
+void swap(MulOfSumOut &a, MulOfSumOut &b) {
+  using ::std::swap;
+  swap(a.sums, b.sums);
+  swap(a.mul, b.mul);
+  swap(a.__isset, b.__isset);
+}
+
+MulOfSumOut::MulOfSumOut(const MulOfSumOut& other16) {
+  sums = other16.sums;
+  mul = other16.mul;
+  __isset = other16.__isset;
+}
+MulOfSumOut& MulOfSumOut::operator=(const MulOfSumOut& other17) {
+  sums = other17.sums;
+  mul = other17.mul;
+  __isset = other17.__isset;
+  return *this;
+}
+void MulOfSumOut::printTo(std::ostream& out) const {
+  using ::apache::thrift::to_string;
+  out << "MulOfSumOut(";
+  out << "sums=" << to_string(sums);
+  out << ", " << "mul=" << to_string(mul);
+  out << ")";
+}
+
 } // namespace
